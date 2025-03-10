@@ -2,24 +2,10 @@ from ditherpy import Dither
 from PIL import Image
 import numpy as np
 
-def create_gradient(width=640):
-	# Create a gradient where R, G, and B values change smoothly
-	x = np.linspace(0, 255, width)
-	y = np.linspace(0, 255, width)
-	X, Y = np.meshgrid(x, y)
-
-	# Assign RGB channels
-	R = X  # Red increases from left to right
-	G = Y  # Green increases from top to bottom
-	B = 255 - X  # Blue decreases from left to right
-
-	# Stack channels to create an RGB image
-	return np.dstack((R, G, B)).astype(np.uint8)
-
 # Test image using Dürer's Young Hare
-input_image = Image.open("input.jpg").convert("RGB")
+input_image = Image.open("hare-input.jpg").convert("RGB")
 # Test image using an RGB gradient
-input_gradient = create_gradient()
+input_gradient = Image.open("gradient-input.png").convert("RGB")
 
 ditherer_linear = Dither()
 ditherer_sRGB = Dither(linearise=False, correct_perception=False)
