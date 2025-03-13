@@ -4,9 +4,12 @@ from tqdm import tqdm
 class Dither:
 	def __init__(
 			self,
+			mode="FloydSteinberg",
 			linearise=True,
-			correct_perception=True
+			correct_perception=True,
 		):
+		self.mode = mode # "FloydSteinberg" or "Atkinson"
+
 		self.linearise = linearise # Linearise the image's colours before
 
 		self.correct_perception = correct_perception # Correct for perception when comparing colors
@@ -45,19 +48,30 @@ class Dither:
 				# Set pixel to closest color
 				image[y, x] = palette[index]
 
-				# Atkinson Dithering
-				if x + 1 < x_max:
-					image[y, x+1] += error / 8
-				if x + 2 < x_max:
-					image[y, x+2] += error / 8
-				if y + 1 < y_max:
-					if x - 1 >= 0:
-						image[y+1, x-1] += error / 8
-					image[y+1, x] += error / 8
+				if self.mode == "FloydSteinberg":
+					# Floyd-Steinberg Dithering
 					if x + 1 < x_max:
-						image[y+1, x+1] += error / 8
-				if y + 2 < y_max:
-					image[y+2, x] += error / 8
+						image[y, x+1] += error * 7 / 16
+					if y + 1 < y_max:
+						if x - 1 >= 0:
+							image[y+1, x-1] += error * 3 / 16
+						image[y+1, x] += error * 5 / 16
+						if x + 1 < x_max:
+							image[y+1, x+1] += error * 1 / 16
+				elif self.mode == "Atkinson":
+					# Atkinson Dithering
+					if x + 1 < x_max:
+						image[y, x+1] += error / 8
+					if x + 2 < x_max:
+						image[y, x+2] += error / 8
+					if y + 1 < y_max:
+						if x - 1 >= 0:
+							image[y+1, x-1] += error / 8
+						image[y+1, x] += error / 8
+						if x + 1 < x_max:
+							image[y+1, x+1] += error / 8
+					if y + 2 < y_max:
+						image[y+2, x] += error / 8
 
 		return image
 	
