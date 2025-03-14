@@ -15,12 +15,15 @@ Run `python3 demo.py` to generate two demo images, one of Dürer's "Young Hare" 
 
 ![Dithered Gradient](.github/gradient.png)
 
+![Black and white dithered Gradient](.github/gradient-bw.png)
+
 The first image is the original, the second the linearised and third the non-linearised dithered image.
 
 ### Usage as a library
 
 Import `from ditherpy import Dither`.
 You can toggle the options `linearise` and `correct_perception`.
+You can also choose the dithering diffusion matrix `mode="Atkinson"|"FloydSteinberg"`.
 
 Load your image with Pillow into a numpy array, choose a palette and then run: 
 
