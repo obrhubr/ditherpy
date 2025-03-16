@@ -22,7 +22,7 @@ The first image is the original, the second the linearised and third the non-lin
 ### Usage as a library
 
 Import `from ditherpy import Dither`.
-You can toggle the options `linearise` and `correct_perception`.
+You can choose the colour space to use `colour_space` from `"srgb"|"lin-srgb"|"oklab"`.
 You can also choose the dithering diffusion matrix `mode="Atkinson"|"FloydSteinberg"`.
 
 Load your image with Pillow into a numpy array, choose a palette and then run: 

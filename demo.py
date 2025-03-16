@@ -9,8 +9,8 @@ input_gradient = Image.open("gradient-input.png").convert("RGB")
 # Test image using a BW gradient
 input_gradient_bw = Image.open("gradient-bw-input.png").convert("RGB")
 
-ditherer_linear = Dither(mode="FloydSteinberg", linearise=True, correct_perception=True)
-ditherer_sRGB = Dither(mode="FloydSteinberg", linearise=False, correct_perception=False)
+ditherer_linear = Dither(mode="FloydSteinberg", colour_space="oklab")
+ditherer_sRGB = Dither(mode="FloydSteinberg", colour_space="lin-srgb")
 
 # RGB palette
 palette_rgb = np.array([[0, 0, 0], [255, 255, 255], [255, 0, 0], [0, 255, 0], [0, 0, 255]])
