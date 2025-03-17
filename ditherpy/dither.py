@@ -8,9 +8,11 @@ class Dither:
 			self,
 			mode="FloydSteinberg",
 			colour_space="srgb",
+			dynamic_palette=False
 		):
 		self.mode = mode # "FloydSteinberg" or "Atkinson"
 		self.colour_space = colour_space
+		self.dynamic_palette = dynamic_palette # Create palette based on images colours
 
 		# Perceptual luminance coefficients for lin-srgb
 		self.perceptual_luminance_rgb = np.array([0.2126, 0.7152, 0.0722])  # R, G, B perception weights
@@ -153,13 +155,14 @@ class Dither:
 
 		image_converted = self.apply_colour_space(image, self.colour_space)
 		
-		l_min, l_max = image_converted[..., 0].min(), image_converted[..., 0].max()
-		a_min, a_max = image_converted[..., 1].min(), image_converted[..., 1].max()
-		b_min, b_max = image_converted[..., 2].min(), image_converted[..., 2].max()
-
-		print(f"Ranges m[{l_min}, {a_min}, {b_min}] M[{l_max}, {a_max}, {b_max}]")
-
-		palette_converted = np.array(list(itertools.product([l_min, l_max], [a_min, a_max], [b_min, b_max])))
+		if self.dynamic_palette:
+			# Get min,max for each channel and create palette from all possibilities
+			l_min, l_max = image_converted[..., 0].min(), image_converted[..., 0].max()
+			a_min, a_max = image_converted[..., 1].min(), image_converted[..., 1].max()
+			b_min, b_max = image_converted[..., 2].min(), image_converted[..., 2].max()
+			palette_converted = np.array(list(itertools.product([l_min, l_max], [a_min, a_max], [b_min, b_max])))
+		else:
+			palette_converted = self.apply_colour_space(palette, self.colour_space)
 
 		dithered = self.__dither(image_converted, palette_converted)
 
