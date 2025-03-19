@@ -9,8 +9,8 @@ input_gradient = Image.open("gradient-input.png").convert("RGB")
 # Test image using a BW gradient
 input_gradient_bw = Image.open("gradient-bw-input.png").convert("RGB")
 
-ditherer_linear = Dither(mode="FloydSteinberg", colour_space="oklab")
-ditherer_sRGB = Dither(mode="FloydSteinberg", colour_space="lin-srgb")
+ditherer1 = Dither(mode="FloydSteinberg", colour_space="oklab")
+ditherer2 = Dither(mode="FloydSteinberg", colour_space="lin-srgb")
 
 # RGB palette
 palette_rgb = np.array([[0, 0, 0], [255, 255, 255], [255, 0, 0], [0, 255, 0], [0, 0, 255]])
@@ -25,13 +25,14 @@ for name, img, palette in [
 	print(f"Dithering {name} :")
 
 	# Linearise and dither
-	print(f"Dithering in linear colour-space...")
-	dithered_linear = ditherer_linear.dither(img, palette)
+	print(f"Dithering in {ditherer1.colour_space} colour-space, using {ditherer1.mode}...")
+	dithered_linear = ditherer1.dither(img, palette)
 
 	# Dither directly in sRGB
-	print(f"Dithering in sRGB colour-space...")
-	dithered_sRGB = ditherer_sRGB.dither(img, palette)
+	print(f"Dithering in {ditherer2.colour_space} colour-space, using {ditherer2.mode}..")
+	dithered_sRGB = ditherer2.dither(img, palette)
 
+	# Select horizontal or vertical grid for the output based on aspect ratio
 	if dithered_sRGB.shape[0] >= dithered_sRGB.shape[1]:
 		concat_axis = 1
 	else:

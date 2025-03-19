@@ -144,6 +144,14 @@ class Dither:
 
 		return image
 	
+	# Generate a palette from the image's darkest and lightest values in each channel (already converted into the colourspace)
+	def generate_dynamic_palette(self, image):
+		# Get min,max for each channel and create palette from all possibilities
+		l_min, l_max = image[..., 0].min(), image[..., 0].max()
+		a_min, a_max = image[..., 1].min(), image[..., 1].max()
+		b_min, b_max = image[..., 2].min(), image[..., 2].max()
+		return np.array(list(itertools.product([l_min, l_max], [a_min, a_max], [b_min, b_max])))
+
 	def dither(self, image, palette=np.array([[0, 0, 0], [255, 255, 255]])):
 		image = np.array(image)
 
@@ -156,11 +164,7 @@ class Dither:
 		image_converted = self.apply_colour_space(image, self.colour_space)
 		
 		if self.dynamic_palette:
-			# Get min,max for each channel and create palette from all possibilities
-			l_min, l_max = image_converted[..., 0].min(), image_converted[..., 0].max()
-			a_min, a_max = image_converted[..., 1].min(), image_converted[..., 1].max()
-			b_min, b_max = image_converted[..., 2].min(), image_converted[..., 2].max()
-			palette_converted = np.array(list(itertools.product([l_min, l_max], [a_min, a_max], [b_min, b_max])))
+			palette_converted = self.generate_dynamic_palette(image_converted)
 		else:
 			palette_converted = self.apply_colour_space(palette, self.colour_space)
 
